@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technology | Orion Audio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #fff;
+      color: #1d1c1f;
+      line-height: 1.6;
+    }
+
+    body.dark { background: #101010; color: #f5f5f7; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s;
+    }
+
+    body.dark .navbar {
+      background: rgba(20, 20, 22, 0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo a {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, #333, #000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    body.dark .logo a {
+      background: linear-gradient(135deg, #eee, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .dark-toggle {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .tech-hero {
+      padding: 6rem 5%;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      margin-bottom: 1rem;
+      font-weight: 700;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .page-subtitle {
+      font-size: 1.3rem;
+      color: #6e6e73;
+      max-width: 700px;
+      margin: 0 auto;
+      animation: fadeInUp 0.8s ease 0.2s backwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tech-features {
+      padding: 5rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+    }
+
+    .tech-feature-item {
+      text-align: center;
+      padding: 2rem;
+      background: #f9f9fb;
+      border-radius: 32px;
+      transition: all 0.3s;
+    }
+
+    body.dark .tech-feature-item { background: #1d1d20; }
+
+    .tech-feature-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .tech-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-feature-item h2 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+
+    .tech-feature-item p {
+      color: #6e6e73;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .tech-video-section {
+      padding: 5rem 5%;
+      background: #f9f9fb;
+      margin-top: 4rem;
+    }
+
+    body.dark .tech-video-section { background: #1a1a1e; }
+
+    .video-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .video-container h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .tech-animation-demo {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 32px;
+      padding: 4rem 2rem;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-scene {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .headphone-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .headphone-center {
+      font-size: 8rem;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .headphone-left,
+    .headphone-right {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .sound-wave {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: wave-pulse 2s ease-out infinite;
+    }
+
+    .headphone-left .sound-wave {
+      right: 0;
+    }
+
+    .headphone-right .sound-wave {
+      left: 0;
+    }
+
+    .wave-1 { animation-delay: 0s; }
+    .wave-2 { animation-delay: 0.5s; }
+    .wave-3 { animation-delay: 1s; }
+
+    @keyframes wave-pulse {
+      0% {
+        transform: scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.95);
+      padding: 2rem 1.5rem;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #1d1c1f;
+      font-size: 1.1rem;
+    }
+
+    body.dark .feature-card {
+      background: rgba(30,30,32,0.95);
+    }
+
+    body.dark .card-title {
+      color: #f5f5f7;
+    }
+
+    .footer {
+      background: #f5f5f7;
+      padding: 3rem 5% 2rem;
+      margin-top: 4rem;
+      text-align: center;
+      color: #6e6e73;
+    }
+
+    body.dark .footer { background: #151517; }
+
+    /* Animation classes */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+
+    @media (max-width: 800px) {
+      .tech-features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .headphone-center {
+        font-size: 5rem;
+      }
+      .headphone-left,
+      .headphone-right {
+        display: none;
+      }
+      .feature-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><a href="index.html">orion</a></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="tech.html">Tech</a>
+      <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+      <a href="account.html"><i class="fa-regular fa-user"></i></a>
+      <button class="dark-toggle" id="darkToggle"><i class="fa-regular fa-moon"></i></button>
+    </div>
+  </nav>
+
+  <section class="tech-hero">
+    <h1 class="page-title fade-up">Innovation in every detail.</h1>
+    <p class="page-subtitle fade-up">Cutting-edge technology that defines the future of audio.</p>
+  </section>
+
+  <section class="tech-features">
+    <div class="tech-feature-item fade-up">
+      <div class="tech-icon">🎵</div>
+      <h2>Spatial Audio</h2>
+      <p>Experience sound that moves with you. Dynamic head tracking and personalized sound profiles create an immersive 3D audio experience that adapts in real-time.</p>
+    </div>
+    <div class="tech-feature-item fade-up">
+      <div class="tech-icon">🔇</div>
+      <h2>Adaptive ANC</h2>
+      <p>Intelligent noise cancellation that adapts to your environment in real-time, blocking up to 99% of unwanted noise while preserving audio clarity.</p>
+    </div>
+    <div class="tech-feature-item fade-up">
+      <div class="tech-icon">⚡</div>
+      <h2>Fast Charge</h2>
+      <p>Just 5 minutes of charging gives you 2 hours of playback. Full charge delivers 30 hours of continuous audio with industry-leading battery efficiency.</p>
+    </div>
+    <div class="tech-feature-item fade-up">
+      <div class="tech-icon">🛡️</div>
+      <h2>Titanium Build</h2>
+      <p>Aerospace-grade titanium construction provides exceptional durability while remaining incredibly lightweight at just 58g. Built to last a lifetime.</p>
+    </div>
+  </section>
+
+  <section class="tech-video-section">
+    <div class="video-container">
+      <h2 class="fade-up">See the technology in action</h2>
+      <div class="tech-animation-demo fade-up">
+        <div class="demo-scene">
+          <div class="headphone-visual">
+            <div class="headphone-left">
+              <div class="sound-wave wave-1"></div>
+              <div class="sound-wave wave-2"></div>
+              <div class="sound-wave wave-3"></div>
+            </div>
+            <div class="headphone-center">🎧</div>
+            <div class="headphone-right">
+              <div class="sound-wave wave-1"></div>
+              <div class="sound-wave wave-2"></div>
+              <div class="sound-wave wave-3"></div>
+            </div>
+          </div>
+
+          <div class="feature-cards">
+            <div class="feature-card fade-up delay-1">
+              <div class="card-icon">🎵</div>
+              <div class="card-title">Spatial Audio</div>
+            </div>
+            <div class="feature-card fade-up delay-2">
+              <div class="card-icon">🔇</div>
+              <div class="card-title">Adaptive ANC</div>
+            </div>
+            <div class="feature-card fade-up delay-3">
+              <div class="card-icon">⚡</div>
+              <div class="card-title">Fast Charge</div>
+            </div>
+            <div class="feature-card fade-up delay-4">
+              <div class="card-icon">🛡️</div>
+              <div class="card-title">Titanium Build</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    © 2025 Orion. All rights reserved.
+  </footer>
+
+  <script>
+    // Dark mode
+    const darkToggle = document.getElementById('darkToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('orionTheme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+      darkToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('orionTheme', isDark ? 'dark' : 'light');
+      darkToggle.querySelector('i').classList.toggle('fa-moon');
+      darkToggle.querySelector('i').classList.toggle('fa-sun');
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

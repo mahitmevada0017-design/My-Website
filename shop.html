@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop | Orion Audio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #fff;
+      color: #1d1c1f;
+      line-height: 1.6;
+    }
+
+    body.dark { background: #101010; color: #f5f5f7; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s;
+    }
+
+    body.dark .navbar {
+      background: rgba(20, 20, 22, 0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+
+    .constellation-logo {
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.3));
+    }
+
+    .star-point {
+      animation: star-twinkle 2s ease-in-out infinite;
+    }
+
+    .star-1 { animation-delay: 0s; }
+    .star-2 { animation-delay: 0.4s; }
+    .star-3 { animation-delay: 0.8s; }
+    .star-4 { animation-delay: 1.2s; }
+    .star-5 { animation-delay: 1.6s; }
+
+    @keyframes star-twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #333336, #000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    body.dark .logo-text {
+      background: linear-gradient(135deg, #eee, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .dark-toggle {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      text-align: center;
+      margin: 4rem 0 1rem;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #6e6e73;
+      margin-bottom: 3rem;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 3rem 0;
+      flex-wrap: wrap;
+      padding: 0 5%;
+    }
+
+    .filter-btn {
+      padding: 0.7rem 1.8rem;
+      border: 2px solid #e5e5ea;
+      background: white;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .filter-btn.active {
+      background: #1d1c1f;
+      color: white;
+      border-color: #1d1c1f;
+    }
+
+    body.dark .filter-btn {
+      background: #1d1d20;
+      border-color: rgba(255,255,255,0.1);
+      color: #f5f5f7;
+    }
+
+    body.dark .filter-btn.active {
+      background: #f5f5f7;
+      color: #101010;
+      border-color: #f5f5f7;
+    }
+
+    .filter-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .products-section {
+      padding: 2rem 5%;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #f9f9fb;
+      border-radius: 32px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    body.dark .product-card { background: #1d1d20; }
+
+    .product-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.3);
+    }
+
+    .product-image {
+      background: linear-gradient(135deg, #f0f0f5, #e8e8ed);
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 5rem;
+    }
+
+    body.dark .product-image {
+      background: linear-gradient(135deg, #2a2a2e, #222225);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #667eea;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .badge-new { background: #667eea; }
+    .badge-sale { background: #ff3b30; }
+    .badge-pro { background: #764ba2; }
+    .badge-max { background: #000; }
+    .badge-limited { background: #f59e0b; }
+
+    .product-info { padding: 1.5rem; }
+
+    .product-name {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .product-desc {
+      color: #6e6e73;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .price-original {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 1rem;
+      margin-left: 0.5rem;
+    }
+
+    .product-colors {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .color-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #e5e5ea;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-dot:hover { transform: scale(1.15); }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      color: #f59e0b;
+    }
+
+    .rating-count {
+      color: #6e6e73;
+    }
+
+    .product-btn {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      background: #1d1c1f;
+      color: white;
+      text-align: center;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .product-btn:hover {
+      background: #333;
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    body.dark .product-btn {
+      background: #f5f5f7;
+      color: #101010;
+    }
+
+    .footer {
+      background: #f5f5f7;
+      padding: 3rem 5% 2rem;
+      margin-top: 4rem;
+      text-align: center;
+      color: #6e6e73;
+    }
+
+    body.dark .footer { background: #151517; }
+
+    /* Animation classes */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html" class="logo-link">
+        <svg class="constellation-logo" width="40" height="40" viewBox="0 0 40 40">
+          <defs>
+            <linearGradient id="constellationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea" />
+              <stop offset="100%" style="stop-color:#764ba2" />
+            </linearGradient>
+          </defs>
+          <line x1="20" y1="8" x2="12" y2="20" stroke="url(#constellationGrad)" stroke-width="1.5" opacity="0.5"/>
+          <line x1="20" y1="8" x2="28" y2="20" stroke="url(#constellationGrad)" stroke-width="1.5" opacity="0.5"/>
+          <line x1="12" y1="20" x2="28" y2="20" stroke="url(#constellationGrad)" stroke-width="1.5" opacity="0.5"/>
+          <line x1="12" y1="20" x2="20" y2="32" stroke="url(#constellationGrad)" stroke-width="1.5" opacity="0.5"/>
+          <line x1="28" y1="20" x2="20" y2="32" stroke="url(#constellationGrad)" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="20" cy="8" r="2.5" fill="url(#constellationGrad)" class="star-point star-1"/>
+          <circle cx="12" cy="20" r="2" fill="url(#constellationGrad)" class="star-point star-2"/>
+          <circle cx="28" cy="20" r="2" fill="url(#constellationGrad)" class="star-point star-3"/>
+          <circle cx="20" cy="32" r="2.5" fill="url(#constellationGrad)" class="star-point star-4"/>
+          <circle cx="20" cy="20" r="1.5" fill="url(#constellationGrad)" class="star-point star-5"/>
+        </svg>
+        <span class="logo-text">orion</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="tech.html">Tech</a>
+      <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+      <a href="account.html"><i class="fa-regular fa-user"></i></a>
+      <button class="dark-toggle" id="darkToggle"><i class="fa-regular fa-moon"></i></button>
+    </div>
+  </nav>
+
+  <section>
+    <h1 class="page-title fade-up">The complete lineup.</h1>
+    <p class="page-subtitle fade-up">Find your perfect sound.</p>
+  </section>
+
+  <div class="filters fade-up">
+    <button class="filter-btn active" data-filter="all">All Products</button>
+    <button class="filter-btn" data-filter="earbuds">Earbuds</button>
+    <button class="filter-btn" data-filter="headphones">Headphones</button>
+    <button class="filter-btn" data-filter="accessories">Accessories</button>
+    <button class="filter-btn" data-filter="bundles">Bundles</button>
+  </div>
+
+  <div class="products-section">
+    <div class="products-grid">
+      
+      <!-- EARBUDS -->
+      <div class="product-card fade-up" data-category="earbuds">
+        <div class="product-image">
+          <span>🎧</span>
+          <div class="product-badge badge-new">New</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Air</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.9)</span>
+          </div>
+          <p class="product-desc">Lightweight wireless freedom</p>
+          <div class="product-price">$179</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+            <span class="color-dot" style="background:#8e8ea0;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="earbuds">
+        <div class="product-image">
+          <span>🎵</span>
+          <div class="product-badge badge-pro">Pro</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Pro</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.8)</span>
+          </div>
+          <p class="product-desc">Spatial audio perfection</p>
+          <div class="product-price">$329</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#c0c0d0;"></span>
+            <span class="color-dot" style="background:#b8860b;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="earbuds">
+        <div class="product-image">
+          <span>💎</span>
+          <div class="product-badge badge-limited">Limited</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Elite</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(5.0)</span>
+          </div>
+          <p class="product-desc">Limited edition titanium</p>
+          <div class="product-price">$499</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#c0c0c0;"></span>
+            <span class="color-dot" style="background:#ffd700;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="earbuds">
+        <div class="product-image">
+          <span>🏃</span>
+          <div class="product-badge badge-new">New</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Sport</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.6)</span>
+          </div>
+          <p class="product-desc">Workout-ready with secure fit</p>
+          <div class="product-price">$149</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#ff3b30;"></span>
+            <span class="color-dot" style="background:#34c759;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <!-- HEADPHONES -->
+      <div class="product-card fade-up" data-category="headphones">
+        <div class="product-image">
+          <span>🎙️</span>
+          <div class="product-badge badge-max">Max</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Max</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.9)</span>
+          </div>
+          <p class="product-desc">Studio-grade over-ear</p>
+          <div class="product-price">$549</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#e8e8ed;"></span>
+            <span class="color-dot" style="background:#b8860b;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="headphones">
+        <div class="product-image">
+          <span>🎚️</span>
+          <div class="product-badge badge-pro">Pro</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Studio</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.7)</span>
+          </div>
+          <p class="product-desc">Professional monitoring</p>
+          <div class="product-price">$699</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#8e8ea0;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="headphones">
+        <div class="product-image">
+          <span>🎮</span>
+          <div class="product-badge badge-new">New</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Gaming</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.5)</span>
+          </div>
+          <p class="product-desc">Low-latency gaming audio</p>
+          <div class="product-price">$249</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#00d4ff;"></span>
+            <span class="color-dot" style="background:#ff3b30;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="headphones">
+        <div class="product-image">
+          <span>🌙</span>
+          <div class="product-badge badge-sale">Sale</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Orion Comfort</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.4)</span>
+          </div>
+          <p class="product-desc">All-day comfort padding</p>
+          <div class="product-price">$199 <span class="price-original">$249</span></div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <!-- ACCESSORIES -->
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>📦</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Premium Case</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.8)</span>
+          </div>
+          <p class="product-desc">Leather finish charging case</p>
+          <div class="product-price">$89</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#8b4513;"></span>
+            <span class="color-dot" style="background:#4a5568;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🔌</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">USB-C Cable</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.3)</span>
+          </div>
+          <p class="product-desc">2m braided cable</p>
+          <div class="product-price">$29</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🎒</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Travel Case</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.7)</span>
+          </div>
+          <p class="product-desc">Hard-shell protection</p>
+          <div class="product-price">$49</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🔋</span>
+          <div class="product-badge badge-new">New</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Wireless Charger</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.5)</span>
+          </div>
+          <p class="product-desc">Fast wireless charging pad</p>
+          <div class="product-price">$59</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🎧</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Ear Tips (S/M/L)</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.2)</span>
+          </div>
+          <p class="product-desc">Memory foam replacement tips</p>
+          <div class="product-price">$19</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🧹</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Cleaning Kit</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.9)</span>
+          </div>
+          <p class="product-desc">Complete care solution</p>
+          <div class="product-price">$24</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>📱</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Phone Stand</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.4)</span>
+          </div>
+          <p class="product-desc">Aluminum desktop stand</p>
+          <div class="product-price">$39</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#c0c0c0;"></span>
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🎛️</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Headphone Stand</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.8)</span>
+          </div>
+          <p class="product-desc">Premium aluminum stand</p>
+          <div class="product-price">$79</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#c0c0c0;"></span>
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#b8860b;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="accessories">
+        <div class="product-image">
+          <span>🔊</span>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Audio Adapter</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.3)</span>
+          </div>
+          <p class="product-desc">3.5mm to USB-C adapter</p>
+          <div class="product-price">$15</div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">Add to cart</a>
+        </div>
+      </div>
+
+      <!-- BUNDLES -->
+      <div class="product-card fade-up" data-category="bundles">
+        <div class="product-image">
+          <span>🎁</span>
+          <div class="product-badge badge-sale">Save $100</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Pro Bundle</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(5.0)</span>
+          </div>
+          <p class="product-desc">Pro + Case + Cable + Stand</p>
+          <div class="product-price">$399 <span class="price-original">$499</span></div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#c0c0d0;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="bundles">
+        <div class="product-image">
+          <span>📦</span>
+          <div class="product-badge badge-sale">Save $75</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Starter Pack</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(4.8)</span>
+          </div>
+          <p class="product-desc">Air + Case + Tips + Cable</p>
+          <div class="product-price">$249 <span class="price-original">$324</span></div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#f5f5f7;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="bundles">
+        <div class="product-image">
+          <span>🏆</span>
+          <div class="product-badge badge-limited">Ultimate</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Complete Collection</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(5.0)</span>
+          </div>
+          <p class="product-desc">All products + exclusive case</p>
+          <div class="product-price">$1,499 <span class="price-original">$1,999</span></div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+      <div class="product-card fade-up" data-category="bundles">
+        <div class="product-image">
+          <span>🎒</span>
+          <div class="product-badge badge-new">New</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">Travel Bundle</h3>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(4.6)</span>
+          </div>
+          <p class="product-desc">Max + Travel case + Cable + Adapter</p>
+          <div class="product-price">$649 <span class="price-original">$732</span></div>
+          <div class="product-colors">
+            <span class="color-dot" style="background:#1d1c1f;"></span>
+            <span class="color-dot" style="background:#e8e8ed;"></span>
+          </div>
+          <a href="product.html" class="product-btn">View details</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    © 2025 Orion. All rights reserved.
+  </footer>
+
+  <script>
+    // Dark mode
+    const darkToggle = document.getElementById('darkToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('orionTheme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+      darkToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('orionTheme', isDark ? 'dark' : 'light');
+      darkToggle.querySelector('i').classList.toggle('fa-moon');
+      darkToggle.querySelector('i').classList.toggle('fa-sun');
+    });
+
+    // Filter products
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active from all buttons
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const filter = btn.dataset.filter;
+        
+        // Animate filter
+        productCards.forEach((card, index) => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            setTimeout(() => {
+              card.style.display = 'block';
+              setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+              }, 10);
+            }, index * 30);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+
+    // Add to cart functionality for accessories
+    document.querySelectorAll('.product-btn').forEach(btn => {
+      if (btn.textContent.includes('Add to cart')) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const productName = btn.closest('.product-info').querySelector('.product-name').textContent;
+          const productPrice = parseFloat(btn.closest('.product-info').querySelector('.product-price').textContent.replace('$', ''));
+          
+          // Get cart from localStorage
+          let cart = JSON.parse(localStorage.getItem('orionCart') || '[]');
+          
+          // Add item
+          cart.push({
+            id: productName.toLowerCase().replace(/\s/g, '-'),
+            name: productName,
+            price: productPrice,
+            quantity: 1,
+            color: 'Default',
+            image: btn.closest('.product-card').querySelector('.product-image span').textContent
+          });
+          
+          localStorage.setItem('orionCart', JSON.stringify(cart));
+          
+          // Visual feedback
+          const originalText = btn.textContent;
+          btn.textContent = '✓ Added!';
+          btn.style.background = '#4caf50';
+          
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+          }, 2000);
+        });
+      }
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

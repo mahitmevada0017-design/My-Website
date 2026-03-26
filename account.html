@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | Orion Audio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #fff;
+      color: #1d1c1f;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body.dark { background: #101010; color: #f5f5f7; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s;
+    }
+
+    body.dark .navbar {
+      background: rgba(20, 20, 22, 0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo a {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(135deg, #333, #000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    body.dark .logo a {
+      background: linear-gradient(135deg, #eee, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .dark-toggle {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      text-align: center;
+      margin: 3rem 0 2rem;
+      font-weight: 700;
+    }
+
+    .account-section {
+      padding: 2rem 5%;
+      min-height: 80vh;
+    }
+
+    .account-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 3rem;
+    }
+
+    .account-sidebar {
+      background: #f9f9fb;
+      padding: 2rem;
+      border-radius: 32px;
+      text-align: center;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+    }
+
+    body.dark .account-sidebar { background: #1d1d20; }
+
+    .account-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .account-sidebar h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+
+    .account-sidebar > p {
+      color: #6e6e73;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .account-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .account-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .account-nav-item:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateX(5px);
+    }
+
+    .account-nav-item.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .account-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .account-card {
+      background: #f9f9fb;
+      padding: 2.5rem;
+      border-radius: 32px;
+    }
+
+    body.dark .account-card { background: #1d1d20; }
+
+    .account-card h2 {
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+    }
+
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #e5e5ea;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background: white;
+      color: inherit;
+    }
+
+    body.dark .form-group input,
+    body.dark .form-group select {
+      background: #222225;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .save-btn {
+      padding: 1rem 2.5rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: fit-content;
+    }
+
+    .save-btn:hover {
+      background: #764ba2;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .order-item {
+      display: grid;
+      grid-template-columns: 60px 1fr auto auto;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 24px;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+
+    .order-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    body.dark .order-item { background: #222225; }
+
+    .order-icon {
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    .order-details h4 {
+      margin-bottom: 0.3rem;
+      font-size: 1.1rem;
+    }
+
+    .order-details p {
+      color: #6e6e73;
+      font-size: 0.9rem;
+    }
+
+    .order-price {
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .order-action {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      border: 2px solid #667eea;
+      border-radius: 50px;
+      transition: all 0.3s;
+    }
+
+    .order-action:hover {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .footer {
+      background: #f5f5f7;
+      padding: 3rem 5% 2rem;
+      margin-top: 4rem;
+      text-align: center;
+      color: #6e6e73;
+    }
+
+    body.dark .footer { background: #151517; }
+
+    /* Animation classes */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+
+    @media (max-width: 900px) {
+      .account-container {
+        grid-template-columns: 1fr;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .order-item {
+        grid-template-columns: 50px 1fr;
+      }
+      .order-price,
+      .order-action {
+        grid-column: 2;
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><a href="index.html">orion</a></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="tech.html">Tech</a>
+      <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+      <a href="account.html"><i class="fa-regular fa-user"></i></a>
+      <button class="dark-toggle" id="darkToggle"><i class="fa-regular fa-moon"></i></button>
+    </div>
+  </nav>
+
+  <section class="account-section">
+    <h1 class="page-title fade-up">My Account</h1>
+    
+    <div class="account-container">
+      <div class="account-sidebar fade-up">
+        <div class="account-avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <h3 id="userName">Guest User</h3>
+        <p id="userEmail">guest@orion.com</p>
+        
+        <nav class="account-nav">
+          <a href="#" class="account-nav-item active">
+            <i class="fa-solid fa-user"></i> Profile
+          </a>
+          <a href="#" class="account-nav-item">
+            <i class="fa-solid fa-box"></i> Orders
+          </a>
+          <a href="#" class="account-nav-item">
+            <i class="fa-solid fa-heart"></i> Wishlist
+          </a>
+          <a href="#" class="account-nav-item">
+            <i class="fa-solid fa-gear"></i> Settings
+          </a>
+          <a href="#" class="account-nav-item" onclick="logout(); return false;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </a>
+        </nav>
+      </div>
+
+      <div class="account-content">
+        <div class="account-card fade-up">
+          <h2>Profile Information</h2>
+          <form class="profile-form" onsubmit="return false;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" value="John Doe" id="profileName">
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="john@example.com" id="profileEmail">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" value="+1 (555) 123-4567">
+              </div>
+              <div class="form-group">
+                <label>Country</label>
+                <select>
+                  <option>United States</option>
+                  <option>Canada</option>
+                  <option>United Kingdom</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </form>
+        </div>
+
+        <div class="account-card fade-up">
+          <h2>Recent Orders</h2>
+          <div class="order-item fade-up">
+            <div class="order-icon">🎧</div>
+            <div class="order-details">
+              <h4>Orion Pro</h4>
+              <p>Order #ORN-2024-001 • Delivered Jan 15, 2025</p>
+            </div>
+            <div class="order-price">$329</div>
+            <a href="#" class="order-action">View</a>
+          </div>
+          <div class="order-item fade-up">
+            <div class="order-icon">📦</div>
+            <div class="order-details">
+              <h4>Charging Case</h4>
+              <p>Order #ORN-2024-002 • Delivered Jan 10, 2025</p>
+            </div>
+            <div class="order-price">$89</div>
+            <a href="#" class="order-action">View</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    © 2025 Orion. All rights reserved.
+  </footer>
+
+  <script>
+    // Dark mode
+    const darkToggle = document.getElementById('darkToggle');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('orionTheme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+      darkToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
+    darkToggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('orionTheme', isDark ? 'dark' : 'light');
+      darkToggle.querySelector('i').classList.toggle('fa-moon');
+      darkToggle.querySelector('i').classList.toggle('fa-sun');
+    });
+
+    // Load user data
+    const user = JSON.parse(localStorage.getItem('orionUser'));
+    if (user) {
+      document.getElementById('userName').textContent = user.name || 'User';
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('profileName').value = user.name || '';
+      document.getElementById('profileEmail').value = user.email;
+    }
+
+    function logout() {
+      localStorage.removeItem('orionUser');
+      window.location.href = 'login.html';
+    }
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
