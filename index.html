@@ -1,11 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orion | Sound Evolved</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- AOS Animation Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -27,10 +34,135 @@
 
     h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
 
-    /* Navbar */
-    .navbar {
-      position: sticky;
+    /* ===== CUSTOM CURSOR ===== */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: #667eea;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.15s ease-out;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring.hover {
+      transform: scale(1.8);
+      border-color: rgba(118, 75, 162, 0.8);
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* ===== SCROLL PROGRESS BAR ===== */
+    .scroll-progress {
+      position: fixed;
       top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ===== PRELOADER ===== */
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #101010;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.6s, visibility 0.6s;
+    }
+
+    .preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .preloader-logo {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: preloaderPulse 1.5s ease-in-out infinite;
+    }
+
+    .preloader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      margin-top: 2rem;
+      overflow: hidden;
+    }
+
+    .preloader-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 10px;
+      animation: preloaderFill 2s ease forwards;
+    }
+
+    @keyframes preloaderPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes preloaderFill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* ===== PARTICLE CANVAS ===== */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    body.dark #particleCanvas { opacity: 0.6; }
+
+    /* ===== MAGNETIC BUTTONS ===== */
+    .magnetic-btn {
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       display: flex;
       justify-content: space-between;
@@ -52,13 +184,9 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
     .logo a {
+      font-size: 1.6rem;
+      font-weight: 700;
       text-decoration: none;
       background: linear-gradient(135deg, #333336, #000);
       -webkit-background-clip: text;
@@ -87,6 +215,19 @@
       position: relative;
     }
 
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-links a:hover::after { width: 100%; }
     .nav-links a:hover { opacity: 1; }
 
     .dark-toggle {
@@ -96,72 +237,182 @@
       font-size: 1.3rem;
       cursor: pointer;
       opacity: 0.7;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.4s;
     }
 
-    .dark-toggle:hover { opacity: 1; }
+    .dark-toggle:hover { opacity: 1; transform: rotate(180deg); }
 
-    /* Hero */
+    /* ===== MOBILE MENU ===== */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 150;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    body.dark .mobile-menu {
+      background: rgba(16,16,16,0.98);
+    }
+
+    .mobile-menu.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .mobile-menu a {
+      text-decoration: none;
+      color: inherit;
+      font-size: 2rem;
+      font-weight: 600;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: mobileMenuIn 0.4s ease forwards;
+    }
+
+    .mobile-menu a:nth-child(1) { animation-delay: 0.1s; }
+    .mobile-menu a:nth-child(2) { animation-delay: 0.2s; }
+    .mobile-menu a:nth-child(3) { animation-delay: 0.3s; }
+    .mobile-menu a:nth-child(4) { animation-delay: 0.4s; }
+    .mobile-menu a:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes mobileMenuIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ===== HERO ===== */
     .hero {
-      min-height: 95vh;
+      position: relative;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 0 5%;
-      margin-top: -2rem;
-      position: relative;
       overflow: hidden;
+      color: white;
     }
 
-    .hero-backdrop {
+    .hero-video {
       position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 70% 30%, rgba(220, 220, 255, 0.4) 0%, transparent 60%),
-                  radial-gradient(circle at 20% 70%, rgba(180, 200, 255, 0.3) 0%, transparent 60%);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
       z-index: -1;
-      opacity: 0.7;
     }
 
-    body.dark .hero-backdrop {
-      background: radial-gradient(circle at 70% 30%, rgba(90, 90, 140, 0.3) 0%, transparent 60%),
-                  radial-gradient(circle at 20% 70%, rgba(70, 70, 130, 0.3) 0%, transparent 60%);
+    body.dark .hero-overlay { background: rgba(0, 0, 0, 0.6); }
+
+    .hero-content {
+      max-width: 1000px;
+      position: relative;
+      z-index: 1;
     }
 
-    .hero-content { max-width: 1000px; }
-
+    /* ===== SPLIT TEXT ANIMATION ===== */
     .hero-title {
       font-size: clamp(3rem, 10vw, 5.5rem);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.05;
       margin-bottom: 1.5rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .hero-title .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%) rotateX(90deg);
+      animation: charReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes charReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+      }
     }
 
     .hero-subtitle {
       font-size: clamp(1.4rem, 4vw, 2rem);
       font-weight: 400;
-      color: #6e6e73;
+      color: rgba(255,255,255,0.9);
       margin-bottom: 2.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.2s forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .cta-button {
       display: inline-block;
-      background: #1d1c1f;
-      color: white;
+      background: #fff;
+      color: #1d1c1f;
       font-size: 1.2rem;
       font-weight: 500;
       padding: 1rem 3rem;
       border-radius: 50px;
       text-decoration: none;
       transition: all 0.3s;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
     }
 
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-button:hover::before { left: 100%; }
+
     .cta-button:hover {
-      background: #333;
-      transform: scale(1.02) translateY(-2px);
-      box-shadow: 0 16px 30px rgba(0,0,0,0.15);
+      background: #f0f0f0;
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.25);
     }
 
     body.dark .cta-button {
@@ -169,11 +420,116 @@
       color: #101010;
     }
 
-    /* Showcase */
+    /* ===== HERO SCROLL INDICATOR ===== */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 2s forwards;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .scroll-mouse {
+      width: 26px;
+      height: 42px;
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 20px;
+      position: relative;
+    }
+
+    .scroll-mouse::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 4px;
+      animation: scrollWheel 2s infinite;
+    }
+
+    @keyframes scrollWheel {
+      0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      100% { transform: translateX(-50%) translateY(16px); opacity: 0; }
+    }
+
+    /* ===== FLOATING ELEMENTS ===== */
+    .floating-elements {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .float-item {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.15;
+      animation: floatItem 6s ease-in-out infinite;
+    }
+
+    .float-item:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .float-item:nth-child(2) { top: 60%; left: 85%; animation-delay: 1s; }
+    .float-item:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
+    .float-item:nth-child(4) { top: 30%; left: 75%; animation-delay: 3s; }
+    .float-item:nth-child(5) { top: 50%; left: 50%; animation-delay: 4s; font-size: 1.5rem; }
+
+    @keyframes floatItem {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(5deg); }
+      66% { transform: translateY(10px) rotate(-3deg); }
+    }
+
+    /* ===== MARQUEE BANNER ===== */
+    .marquee-banner {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 1rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-content {
+      display: inline-flex;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-content span {
+      padding: 0 3rem;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ===== SHOWCASE ===== */
     .showcase {
       padding: 6rem 5%;
       max-width: 1200px;
       margin: 0 auto;
+      position: relative;
+      z-index: 2;
     }
 
     .showcase-grid {
@@ -197,11 +553,29 @@
       align-items: center;
       justify-content: center;
       font-size: 8rem;
-      transition: transform 0.4s ease;
+      transition: transform 0.4s ease, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .showcase-image::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(102, 126, 234, 0.1), transparent 30%);
+      animation: shimmer 4s linear infinite;
+    }
+
+    @keyframes shimmer {
+      to { transform: rotate(360deg); }
     }
 
     .showcase-image:hover {
-      transform: scale(1.01);
+      transform: scale(1.02) translateY(-5px);
+      box-shadow: 0 40px 60px -20px rgba(0,0,0,0.3);
     }
 
     body.dark .showcase-image { background: #222225; }
@@ -217,7 +591,85 @@
       margin-bottom: 2rem;
     }
 
-    /* Stats */
+    /* ===== FEATURES GRID ===== */
+    .features-section {
+      padding: 6rem 5%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 3rem auto 0;
+    }
+
+    .feature-card {
+      background: #f5f5f7;
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    body.dark .feature-card { background: #1d1d20; }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+      opacity: 0;
+      transition: opacity 0.4s;
+      border-radius: 24px;
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 30px 60px -20px rgba(102, 126, 234, 0.3);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      animation: featureBounce 3s ease-in-out infinite;
+    }
+
+    .feature-card:nth-child(2) .feature-icon { animation-delay: 0.5s; }
+    .feature-card:nth-child(3) .feature-icon { animation-delay: 1s; }
+    .feature-card:nth-child(4) .feature-icon { animation-delay: 1.5s; }
+
+    @keyframes featureBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .feature-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-card p {
+      color: #6e6e73;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* ===== TILT 3D CARD EFFECT ===== */
+    .tilt-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    /* ===== STATS ===== */
     .stats-row {
       display: flex;
       justify-content: space-around;
@@ -227,6 +679,8 @@
       background: #f9f9fb;
       border-radius: 60px;
       margin: 3rem 5%;
+      position: relative;
+      z-index: 2;
     }
 
     body.dark .stats-row { background: #1a1a1e; }
@@ -237,6 +691,9 @@
       font-size: 3.5rem;
       font-weight: 700;
       letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .stat-label {
@@ -244,18 +701,146 @@
       color: #6e6e73;
     }
 
-    /* Comparison */
-    .comparison-section { padding: 5rem 5%; }
+    /* ===== TESTIMONIALS CAROUSEL ===== */
+    .testimonials-section {
+      padding: 6rem 5%;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .testimonials-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: grab;
+    }
+
+    .testimonials-track:active { cursor: grabbing; }
+
+    .testimonial-card {
+      min-width: 350px;
+      max-width: 400px;
+      background: #f5f5f7;
+      border-radius: 24px;
+      padding: 2.5rem;
+      flex-shrink: 0;
+      transition: all 0.4s;
+      position: relative;
+    }
+
+    body.dark .testimonial-card { background: #1d1d20; }
+
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      font-size: 6rem;
+      font-weight: 800;
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      opacity: 0.08;
+      font-family: Georgia, serif;
+    }
+
+    .testimonial-text {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .testimonial-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .testimonial-role {
+      color: #6e6e73;
+      font-size: 0.85rem;
+    }
+
+    .testimonial-stars {
+      color: #f59e0b;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .testimonial-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #e5e5ea;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      color: inherit;
+    }
+
+    body.dark .testimonial-btn { border-color: rgba(255,255,255,0.2); }
+
+    .testimonial-btn:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: transparent;
+      transform: scale(1.1);
+    }
+
+    /* ===== COMPARISON ===== */
+    .comparison-section {
+      padding: 5rem 5%;
+      position: relative;
+      z-index: 2;
+    }
 
     .section-title {
       font-size: clamp(2.5rem, 8vw, 4rem);
       margin-bottom: 1.5rem;
       line-height: 1.1;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #6e6e73;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .comparison-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
       margin-top: 3rem;
     }
@@ -263,22 +848,299 @@
     .comparison-card {
       background: #f5f5f7;
       border-radius: 32px;
-      padding: 2rem;
-      transition: all 0.3s;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
     }
 
     body.dark .comparison-card { background: #1d1d20; }
 
+    .comparison-card.featured {
+      border-color: #667eea;
+      background: linear-gradient(180deg, rgba(102,126,234,0.05), transparent);
+    }
+
+    .comparison-card .popular-tag {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
     .comparison-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-12px) scale(1.02);
       box-shadow: 0 30px 40px -20px rgba(0,0,0,0.2);
     }
 
-    /* Footer */
+    .comparison-card .card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .comparison-card .features-list {
+      list-style: none;
+      margin: 1.5rem 0;
+    }
+
+    .comparison-card .features-list li {
+      padding: 0.5rem 0;
+      color: #6e6e73;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .comparison-card .features-list li i {
+      color: #4caf50;
+      font-size: 0.85rem;
+    }
+
+    .comparison-card .card-price {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 1rem 0;
+    }
+
+    .card-cta {
+      display: block;
+      text-align: center;
+      padding: 0.9rem;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: #1d1c1f;
+      color: #fff;
+    }
+
+    body.dark .card-cta {
+      background: #f5f5f7;
+      color: #101010;
+    }
+
+    .comparison-card.featured .card-cta {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .card-cta:hover { transform: scale(1.03); }
+
+    /* ===== NEWSLETTER ===== */
+    .newsletter-section {
+      padding: 6rem 5%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .newsletter-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 32px;
+      padding: 4rem 3rem;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      animation: newsletterGlow 8s ease infinite;
+    }
+
+    @keyframes newsletterGlow {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+
+    .newsletter-box h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .newsletter-box p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+      backdrop-filter: blur(10px);
+    }
+
+    .newsletter-form input::placeholder { color: rgba(255,255,255,0.7); }
+    .newsletter-form input:focus { outline: none; border-color: rgba(255,255,255,0.6); }
+
+    .newsletter-form button {
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      border: none;
+      background: white;
+      color: #667eea;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .newsletter-form button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    /* ===== VIDEO SHOWCASE ===== */
+    .video-showcase {
+      padding: 5rem 5%;
+      background: #f9f9fb;
+      position: relative;
+      z-index: 2;
+    }
+
+    body.dark .video-showcase { background: #1a1a1e; }
+
+    .video-wrapper {
+      max-width: 1000px;
+      margin: 3rem auto 0;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 30px 50px -20px rgba(0,0,0,0.3);
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* ===== PARALLAX TEXT ===== */
+    .parallax-text-section {
+      padding: 8rem 5%;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .parallax-text {
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      opacity: 0.06;
+      white-space: nowrap;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+
+    .parallax-text.text-1 { animation: scrollText1 20s linear infinite; }
+    .parallax-text.text-2 { animation: scrollText2 25s linear infinite; top: 30%; }
+
+    @keyframes scrollText1 {
+      0% { transform: translateY(-50%) translateX(0); }
+      100% { transform: translateY(-50%) translateX(-50%); }
+    }
+
+    @keyframes scrollText2 {
+      0% { transform: translateY(-50%) translateX(-50%); }
+      100% { transform: translateY(-50%) translateX(0); }
+    }
+
+    .parallax-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .parallax-content h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .parallax-content p {
+      font-size: 1.2rem;
+      color: #6e6e73;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 90;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-4px) scale(1.1);
+    }
+
+    /* ===== FOOTER ===== */
     .footer {
       background: #f5f5f7;
       padding: 4rem 5% 2rem;
-      margin-top: 4rem;
+      margin-top: 0;
+      position: relative;
+      z-index: 2;
     }
 
     body.dark .footer { background: #151517; }
@@ -291,10 +1153,19 @@
       margin: 0 auto;
     }
 
+    .footer-col h4 { margin-bottom: 1rem; }
+
     .footer-col p {
       color: #6e6e73;
       margin: 0.5rem 0;
       font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .footer-col p:hover {
+      color: #667eea;
+      transform: translateX(4px);
     }
 
     .social-icons {
@@ -302,15 +1173,20 @@
       gap: 1.5rem;
       margin-top: 2rem;
       font-size: 1.4rem;
+      justify-content: center;
     }
 
     .social-icons i {
       opacity: 0.7;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.2s, color 0.2s;
     }
 
-    .social-icons i:hover { opacity: 1; }
+    .social-icons i:hover {
+      opacity: 1;
+      transform: translateY(-3px);
+      color: #667eea;
+    }
 
     .copyright {
       text-align: center;
@@ -319,24 +1195,65 @@
       font-size: 0.85rem;
     }
 
-    /* Animation classes */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-container {
+      position: fixed;
+      top: 5rem;
+      right: 2rem;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
     }
 
-    .fade-up.revealed {
-      opacity: 1;
-      transform: translateY(0);
+    .toast {
+      background: white;
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      animation: toastIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      min-width: 300px;
+      border-left: 4px solid #667eea;
     }
 
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
+    body.dark .toast {
+      background: #222225;
+    }
 
-    /* AI Chat Styles (unchanged, kept as is) */
+    .toast.removing {
+      animation: toastOut 0.4s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(100px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateX(100px); }
+    }
+
+    .toast-icon { font-size: 1.5rem; }
+    .toast-text { font-size: 0.95rem; }
+
+    /* ===== RIPPLE EFFECT ===== */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.3);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ===== CHAT WIDGET STYLES ===== */
     .chat-widget {
       position: fixed;
       bottom: 2rem;
@@ -361,12 +1278,10 @@
 
     @keyframes pulse-ring {
       0%, 100% {
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 
-                    0 0 0 0 rgba(102, 126, 234, 0.6);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 0 0 0 0 rgba(102, 126, 234, 0.6);
       }
       50% {
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 
-                    0 0 0 15px rgba(102, 126, 234, 0);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 0 0 0 15px rgba(102, 126, 234, 0);
       }
     }
 
@@ -408,19 +1323,11 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .chat-container.active {
-      display: flex;
-    }
+    .chat-container.active { display: flex; }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .chat-header {
@@ -455,10 +1362,7 @@
       50% { transform: rotate(10deg); }
     }
 
-    .chat-header-info h4 {
-      margin: 0;
-      font-size: 1.1rem;
-    }
+    .chat-header-info h4 { margin: 0; font-size: 1.1rem; }
 
     .ai-status {
       font-size: 0.8rem;
@@ -511,22 +1415,11 @@
       background: #f9f9fb;
     }
 
-    body.dark .chat-messages {
-      background: #0d0d0f;
-    }
+    body.dark .chat-messages { background: #0d0d0f; }
 
-    .chat-messages::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .chat-messages::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 3px;
-    }
-
-    body.dark .chat-messages::-webkit-scrollbar-thumb {
-      background: #444;
-    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    body.dark .chat-messages::-webkit-scrollbar-thumb { background: #444; }
 
     .message {
       display: flex;
@@ -535,20 +1428,11 @@
     }
 
     @keyframes messageSlide {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .message-avatar {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
+    .message-avatar { font-size: 1.8rem; flex-shrink: 0; }
 
     .message-content {
       background: white;
@@ -558,18 +1442,10 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    body.dark .message-content {
-      background: #222225;
-    }
+    body.dark .message-content { background: #222225; }
+    .message-content p { margin: 0.5rem 0; line-height: 1.5; }
 
-    .message-content p {
-      margin: 0.5rem 0;
-      line-height: 1.5;
-    }
-
-    .user-message {
-      flex-direction: row-reverse;
-    }
+    .user-message { flex-direction: row-reverse; }
 
     .user-message .message-content {
       background: linear-gradient(135deg, #667eea, #764ba2);
@@ -586,52 +1462,20 @@
       transition: all 0.3s;
     }
 
-    body.dark .product-recommendation {
-      background: #222225;
-    }
+    body.dark .product-recommendation { background: #222225; }
 
     .product-recommendation:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
     }
 
-    .product-rec-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .product-rec-icon {
-      font-size: 2.5rem;
-    }
-
-    .product-rec-info h4 {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #1d1c1f;
-    }
-
-    body.dark .product-rec-info h4 {
-      color: #f5f5f7;
-    }
-
-    .product-rec-price {
-      font-weight: 700;
-      color: #667eea;
-      font-size: 1.2rem;
-    }
-
-    .product-rec-desc {
-      color: #6e6e73;
-      font-size: 0.9rem;
-      margin: 0.5rem 0;
-    }
-
-    .product-rec-rating {
-      color: #f59e0b;
-      font-size: 0.9rem;
-    }
+    .product-rec-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+    .product-rec-icon { font-size: 2.5rem; }
+    .product-rec-info h4 { margin: 0; font-size: 1.1rem; color: #1d1c1f; }
+    body.dark .product-rec-info h4 { color: #f5f5f7; }
+    .product-rec-price { font-weight: 700; color: #667eea; font-size: 1.2rem; }
+    .product-rec-desc { color: #6e6e73; font-size: 0.9rem; margin: 0.5rem 0; }
+    .product-rec-rating { color: #f59e0b; font-size: 0.9rem; }
 
     .product-rec-btn {
       display: inline-block;
@@ -646,10 +1490,7 @@
       transition: all 0.3s;
     }
 
-    .product-rec-btn:hover {
-      background: #764ba2;
-      transform: scale(1.05);
-    }
+    .product-rec-btn:hover { background: #764ba2; transform: scale(1.05); }
 
     .typing-indicator {
       display: flex;
@@ -660,9 +1501,7 @@
       width: fit-content;
     }
 
-    body.dark .typing-indicator {
-      background: #222225;
-    }
+    body.dark .typing-indicator { background: #222225; }
 
     .typing-dot {
       width: 8px;
@@ -689,10 +1528,7 @@
       background: white;
     }
 
-    body.dark .quick-questions {
-      background: #1d1d20;
-      border-top-color: rgba(255, 255, 255, 0.1);
-    }
+    body.dark .quick-questions { background: #1d1d20; border-top-color: rgba(255, 255, 255, 0.1); }
 
     .quick-btn {
       background: #f5f5f7;
@@ -705,11 +1541,7 @@
       color: #1d1c1f;
     }
 
-    body.dark .quick-btn {
-      background: #2a2a2e;
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #f5f5f7;
-    }
+    body.dark .quick-btn { background: #2a2a2e; border-color: rgba(255, 255, 255, 0.1); color: #f5f5f7; }
 
     .quick-btn:hover {
       background: #667eea;
@@ -726,10 +1558,7 @@
       background: white;
     }
 
-    body.dark .chat-input-container {
-      background: #1d1d20;
-      border-top-color: rgba(255, 255, 255, 0.1);
-    }
+    body.dark .chat-input-container { background: #1d1d20; border-top-color: rgba(255, 255, 255, 0.1); }
 
     .chat-input {
       flex: 1;
@@ -742,21 +1571,9 @@
       background: #f9f9fb;
     }
 
-    body.dark .chat-input {
-      background: #0d0d0f;
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #f5f5f7;
-    }
-
-    .chat-input:focus {
-      outline: none;
-      border-color: #667eea;
-      background: white;
-    }
-
-    body.dark .chat-input:focus {
-      background: #222225;
-    }
+    body.dark .chat-input { background: #0d0d0f; border-color: rgba(255, 255, 255, 0.1); color: #f5f5f7; }
+    .chat-input:focus { outline: none; border-color: #667eea; background: white; }
+    body.dark .chat-input:focus { background: #222225; }
 
     .chat-send {
       width: 45px;
@@ -775,10 +1592,9 @@
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
 
-    .chat-send:active {
-      transform: scale(0.95);
-    }
+    .chat-send:active { transform: scale(0.95); }
 
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 800px) {
       .showcase-grid, .showcase-grid.reverse {
         grid-template-columns: 1fr;
@@ -786,6 +1602,9 @@
         direction: ltr;
       }
       .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .newsletter-form { flex-direction: column; }
+      .testimonial-card { min-width: 280px; }
     }
 
     @media (max-width: 500px) {
@@ -793,17 +1612,82 @@
         width: calc(100vw - 2rem);
         height: calc(100vh - 100px);
         bottom: 75px;
-        right: 1rem;
-        left: 1rem;
+        right: -1rem;
       }
-      .chat-widget {
-        right: 1rem;
-        bottom: 1rem;
-      }
+      .chat-widget { right: 1rem; bottom: 1rem; }
+      .toast-container { right: 1rem; left: 1rem; }
+      .toast { min-width: auto; }
     }
+
+    /* ===== SMOOTH REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== GLOWING ORB BACKGROUND ===== */
+    .glow-orb {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+      transition: all 0.5s ease;
+    }
+
+    .glow-orb-1 {
+      background: #667eea;
+      top: 20%;
+      left: 10%;
+    }
+
+    .glow-orb-2 {
+      background: #764ba2;
+      bottom: 20%;
+      right: 10%;
+    }
+
+    body.dark .glow-orb { opacity: 0.08; }
   </style>
 </head>
 <body>
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-logo">orion</div>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- GLOW ORBS -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- BACK TO TOP -->
+  <button class="back-to-top" id="backToTop"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <!-- NAVIGATION -->
   <nav class="navbar" id="navbar">
     <div class="logo"><a href="index.html">orion</a></div>
     <div class="nav-links">
@@ -814,109 +1698,333 @@
       <a href="account.html"><i class="fa-regular fa-user"></i></a>
       <button class="dark-toggle" id="darkToggle"><i class="fa-regular fa-moon"></i></button>
     </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
   </nav>
 
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" onclick="closeMobileMenu()">Home</a>
+    <a href="shop.html" onclick="closeMobileMenu()">Shop</a>
+    <a href="tech.html" onclick="closeMobileMenu()">Tech</a>
+    <a href="cart.html" onclick="closeMobileMenu()">Cart</a>
+    <a href="account.html" onclick="closeMobileMenu()">Account</a>
+  </div>
+
+  <!-- HERO SECTION -->
   <section class="hero">
-    <div class="hero-backdrop"></div>
-    <div class="hero-content fade-up">
-      <h1 class="hero-title">Sound. Evolved.</h1>
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="PixVerse_V6_Image_Text_720P_make_a__headphone_.mp4" type="video/mp4">
+      <img src="fullhd.jpg" alt="Headphones">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="floating-elements">
+      <div class="float-item">🎵</div>
+      <div class="float-item">🎶</div>
+      <div class="float-item">✨</div>
+      <div class="float-item">🔊</div>
+      <div class="float-item">🎧</div>
+    </div>
+    
+    <div class="hero-content">
+      <h1 class="hero-title" id="heroTitle">Sound. Evolved.</h1>
       <p class="hero-subtitle">Introducing Orion Audio — where precision meets emotion. Experience clarity like never before.</p>
-      <a href="shop.html" class="cta-button">Explore the lineup</a>
+      <a href="shop.html" class="cta-button magnetic-btn">Explore the lineup</a>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-mouse"></div>
     </div>
   </section>
 
+  <!-- MARQUEE BANNER -->
+  <div class="marquee-banner">
+    <div class="marquee-content">
+      <span>🎧 Free Shipping on All Orders</span>
+      <span>🔥 New Orion Pro — Now Available</span>
+      <span>⭐ Rated #1 Audio Brand 2025</span>
+      <span>🎵 30-Day Money Back Guarantee</span>
+      <span>💎 Limited Edition Titanium — Only 500 Made</span>
+      <span>🎧 Free Shipping on All Orders</span>
+      <span>🔥 New Orion Pro — Now Available</span>
+      <span>⭐ Rated #1 Audio Brand 2025</span>
+      <span>🎵 30-Day Money Back Guarantee</span>
+      <span>💎 Limited Edition Titanium — Only 500 Made</span>
+    </div>
+  </div>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section">
+    <h2 class="section-title reveal">Why Orion?</h2>
+    <p class="section-subtitle reveal">Engineered for perfection. Designed for you.</p>
+    <div class="features-grid">
+      <div class="feature-card tilt-card reveal" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-icon">🎵</div>
+        <h3>Hi-Res Audio</h3>
+        <p>Experience studio-grade 24-bit/96kHz audio that reveals every detail in your music.</p>
+      </div>
+      <div class="feature-card tilt-card reveal" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon">🔇</div>
+        <h3>Adaptive ANC</h3>
+        <p>AI-powered noise cancellation that adapts to your environment in real-time.</p>
+      </div>
+      <div class="feature-card tilt-card reveal" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon">🔋</div>
+        <h3>60hr Battery</h3>
+        <p>Industry-leading battery life with 10-minute quick charge for 5 hours of playback.</p>
+      </div>
+      <div class="feature-card tilt-card reveal" data-aos="fade-up" data-aos-delay="400">
+        <div class="feature-icon">🌊</div>
+        <h3>Spatial Audio</h3>
+        <p>Dynamic head tracking delivers immersive 360° sound that moves with you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE SECTIONS -->
   <section class="showcase">
     <div class="showcase-grid">
-      <div class="showcase-text fade-up">
+      <div class="showcase-text" data-aos="fade-right">
         <h2 class="showcase-title">Designed around you.</h2>
         <p class="showcase-desc">Ultra‑light, seamless titanium construction. The new Orion Pro adapts to your every move with acoustic mesh technology.</p>
-        <a href="product.html" class="cta-button" style="padding:0.8rem 2rem; font-size:1rem;">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="product.html" class="cta-button magnetic-btn" style="padding:0.8rem 2rem; font-size:1rem;">Learn more <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-      <div class="showcase-image fade-up">
+      <div class="showcase-image tilt-card" data-aos="fade-left" data-aos-delay="100">
         <span>🎧</span>
       </div>
     </div>
 
     <div class="showcase-grid reverse">
-      <div class="showcase-text fade-up">
+      <div class="showcase-text" data-aos="fade-left">
         <h2 class="showcase-title">Spatial audio, infinite depth.</h2>
         <p class="showcase-desc">Dynamic head‑tracking and personalized sound profiles bring every note, step, and whisper to life.</p>
-        <a href="tech.html" class="cta-button" style="padding:0.8rem 2rem; font-size:1rem;">Discover audio <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="tech.html" class="cta-button magnetic-btn" style="padding:0.8rem 2rem; font-size:1rem;">Discover audio <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-      <div class="showcase-image fade-up">
-        <span>🌌</span>
+      <div class="showcase-image tilt-card" data-aos="fade-right" data-aos-delay="100">
+        <span><img src="fullhd.jpg" alt="Orion Product" style="width:100%; height:100%; object-fit:cover; border-radius:32px;"></span>
       </div>
     </div>
   </section>
 
+  <!-- PARALLAX TEXT SECTION -->
+  <section class="parallax-text-section">
+    <div class="parallax-text text-1">SOUND EVOLVED • SOUND EVOLVED • SOUND EVOLVED • SOUND EVOLVED •</div>
+    <div class="parallax-text text-2">ORION AUDIO • ORION AUDIO • ORION AUDIO • ORION AUDIO •</div>
+    <div class="parallax-content reveal">
+      <h2>Crafted with obsession.</h2>
+      <p>Every Orion product undergoes 200+ hours of acoustic testing, ensuring that what reaches your ears is nothing short of perfection.</p>
+    </div>
+  </section>
+
+  <!-- STATS ROW -->
   <div class="stats-row" id="stats">
-    <div class="stat-item fade-up">
+    <div class="stat-item" data-aos="flip-up">
       <div class="stat-number" data-target="2.4">0</div>
       <div class="stat-label">million sold</div>
     </div>
-    <div class="stat-item fade-up">
+    <div class="stat-item" data-aos="flip-up" data-aos-delay="100">
       <div class="stat-number" data-target="99.7">0</div>
       <div class="stat-label">% satisfaction</div>
     </div>
-    <div class="stat-item fade-up">
+    <div class="stat-item" data-aos="flip-up" data-aos-delay="200">
       <div class="stat-number" data-target="15">0</div>
       <div class="stat-label">design awards</div>
     </div>
+    <div class="stat-item" data-aos="flip-up" data-aos-delay="300">
+      <div class="stat-number" data-target="42">0</div>
+      <div class="stat-label">countries</div>
+    </div>
   </div>
 
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section">
+    <h2 class="section-title reveal">What people say</h2>
+    <p class="section-subtitle reveal">Don't just take our word for it.</p>
+    <div style="overflow: hidden; margin-top: 2rem;">
+      <div class="testimonials-track" id="testimonialsTrack">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The Orion Pro completely changed how I experience music. The spatial audio is mind-blowing — it's like being in a concert hall."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">A</div>
+            <div>
+              <div class="testimonial-name">Alex Chen</div>
+              <div class="testimonial-role">Music Producer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Best noise cancellation I've ever used. I can finally focus in my open office without hearing a thing. Worth every penny."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">S</div>
+            <div>
+              <div class="testimonial-name">Sarah Miller</div>
+              <div class="testimonial-role">Software Engineer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"I run marathons with the Orion Sport. They never fall out, the bass is incredible, and the battery lasts my entire training week."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">M</div>
+            <div>
+              <div class="testimonial-name">Marcus Johnson</div>
+              <div class="testimonial-role">Marathon Runner</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The titanium build on the Elite is pure luxury. I've never felt something so premium. And the sound? Unreal clarity."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">L</div>
+            <div>
+              <div class="testimonial-name">Lisa Wang</div>
+              <div class="testimonial-role">Creative Director</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★☆</div>
+          <p class="testimonial-text">"Great value for money with the Orion Air. Perfect for commuting and everyday use. Comfortable enough for all-day wear."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">J</div>
+            <div>
+              <div class="testimonial-name">James Park</div>
+              <div class="testimonial-role">Student</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-controls">
+      <button class="testimonial-btn" id="prevTestimonial"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="testimonial-btn" id="nextTestimonial"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </section>
+
+  <!-- VIDEO SHOWCASE -->
+  <section class="video-showcase">
+    <h2 class="section-title" data-aos="fade-up">Experience Orion Pro</h2>
+    <div class="video-wrapper" data-aos="zoom-in-up" data-aos-delay="200">
+      <iframe 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0" 
+        title="Orion Pro Product Video" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+    <p style="text-align:center; margin-top:1.5rem; color:#6e6e73;" data-aos="fade-up" data-aos-delay="400">
+      Watch the cinematic unboxing and sound demo.
+    </p>
+  </section>
+
+  <!-- COMPARISON CARDS -->
   <section class="comparison-section">
-    <h2 class="section-title fade-up" style="text-align:center;">Which Orion is for you?</h2>
+    <h2 class="section-title" data-aos="fade-up">Which Orion is for you?</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Find your perfect match.</p>
     <div class="comparison-grid">
-      <div class="comparison-card fade-up">
+      <div class="comparison-card tilt-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-icon">🎧</div>
         <h3 style="font-size:2rem;">Orion Air</h3>
-        <p style="margin:1rem 0; color:#6e6e73;">Lightweight, sweat‑resistant, all‑day comfort.</p>
-        <p style="font-weight:600;">$179</p>
+        <p style="margin:0.5rem 0; color:#6e6e73;">Lightweight, sweat‑resistant, all‑day comfort.</p>
+        <div class="card-price">$179</div>
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check"></i> 30hr battery life</li>
+          <li><i class="fa-solid fa-check"></i> IPX5 water resistant</li>
+          <li><i class="fa-solid fa-check"></i> Touch controls</li>
+          <li><i class="fa-solid fa-check"></i> Quick charge</li>
+        </ul>
+        <a href="shop.html" class="card-cta">Shop Now</a>
       </div>
-      <div class="comparison-card fade-up">
+      <div class="comparison-card featured tilt-card" data-aos="fade-up" data-aos-delay="200">
+        <span class="popular-tag">Most Popular</span>
+        <div class="card-icon">🎵</div>
         <h3 style="font-size:2rem;">Orion Pro</h3>
-        <p style="margin:1rem 0; color:#6e6e73;">Spatial audio, adaptive ANC, titanium build.</p>
-        <p style="font-weight:600;">$329</p>
+        <p style="margin:0.5rem 0; color:#6e6e73;">Spatial audio, adaptive ANC, titanium build.</p>
+        <div class="card-price">$329</div>
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check"></i> 45hr battery life</li>
+          <li><i class="fa-solid fa-check"></i> Adaptive ANC</li>
+          <li><i class="fa-solid fa-check"></i> Spatial Audio</li>
+          <li><i class="fa-solid fa-check"></i> Titanium frame</li>
+          <li><i class="fa-solid fa-check"></i> Head tracking</li>
+        </ul>
+        <a href="shop.html" class="card-cta">Shop Now</a>
       </div>
-      <div class="comparison-card fade-up">
+      <div class="comparison-card tilt-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-icon">🎙️</div>
         <h3 style="font-size:2rem;">Orion Max</h3>
-        <p style="margin:1rem 0; color:#6e6e73;">Over‑ear, studio‑grade drivers, ultra‑low distortion.</p>
-        <p style="font-weight:600;">$549</p>
+        <p style="margin:0.5rem 0; color:#6e6e73;">Over‑ear, studio‑grade drivers, ultra‑low distortion.</p>
+        <div class="card-price">$549</div>
+        <ul class="features-list">
+          <li><i class="fa-solid fa-check"></i> 60hr battery life</li>
+          <li><i class="fa-solid fa-check"></i> Studio-grade drivers</li>
+          <li><i class="fa-solid fa-check"></i> Ultra-low distortion</li>
+          <li><i class="fa-solid fa-check"></i> Premium leather</li>
+          <li><i class="fa-solid fa-check"></i> Multi-device connect</li>
+        </ul>
+        <a href="shop.html" class="card-cta">Shop Now</a>
       </div>
     </div>
   </section>
 
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="newsletter-box" data-aos="zoom-in">
+      <h2>Stay in the loop.</h2>
+      <p>Get early access to new products, exclusive deals, and audio tips.</p>
+      <form class="newsletter-form" id="newsletterForm" onsubmit="return false;">
+        <input type="email" placeholder="Enter your email" id="newsletterEmail" required>
+        <button type="submit" id="newsletterBtn">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-col">
         <h4>Orion</h4>
         <p>Sound evolved.</p>
+        <p>Since 2020.</p>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
         <p>Air</p>
         <p>Pro</p>
         <p>Max</p>
+        <p>Accessories</p>
       </div>
       <div class="footer-col">
         <h4>Support</h4>
         <p>Contact</p>
         <p>FAQ</p>
+        <p>Warranty</p>
+        <p>Returns</p>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <p>Privacy</p>
         <p>Terms</p>
+        <p>Cookies</p>
       </div>
     </div>
     <div class="social-icons">
       <i class="fa-brands fa-instagram"></i>
       <i class="fa-brands fa-x-twitter"></i>
       <i class="fa-brands fa-youtube"></i>
+      <i class="fa-brands fa-tiktok"></i>
+      <i class="fa-brands fa-discord"></i>
     </div>
-    <div class="copyright">© 2026 Orion. All rights reserved.</div>
+    <div class="copyright">© 2025 Orion. All rights reserved. Crafted with ❤️</div>
   </footer>
 
-  <!-- AI Chat Assistant (unchanged) -->
+  <!-- AI CHAT WIDGET -->
   <div class="chat-widget">
     <button class="chat-toggle" id="chatToggle">
       <i class="fa-solid fa-robot"></i>
@@ -926,17 +2034,13 @@
     <div class="chat-container" id="chatContainer">
       <div class="chat-header">
         <div class="chat-header-left">
-          <div class="ai-avatar">
-            <i class="fa-solid fa-robot"></i>
-          </div>
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
           <div class="chat-header-info">
             <h4>Orion AI Assistant</h4>
             <p class="ai-status">Online • Ready to help</p>
           </div>
         </div>
-        <button class="chat-close" id="chatClose">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button class="chat-close" id="chatClose"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="chat-messages" id="chatMessages">
@@ -959,22 +2063,75 @@
       </div>
 
       <div class="chat-input-container">
-        <input 
-          type="text" 
-          class="chat-input" 
-          id="chatInput" 
-          placeholder="Ask me anything..."
-          autocomplete="off"
-        >
-        <button class="chat-send" id="chatSend">
-          <i class="fa-solid fa-paper-plane"></i>
-        </button>
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything..." autocomplete="off">
+        <button class="chat-send" id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
     </div>
   </div>
 
+  <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script>
-    // Dark mode
+    // ===== PRELOADER =====
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+        initSplitText();
+        showWelcomeToast();
+      }, 2200);
+    });
+
+    // ===== SPLIT TEXT ANIMATION =====
+    function initSplitText() {
+      const title = document.getElementById('heroTitle');
+      const text = title.textContent;
+      title.innerHTML = '';
+      text.split('').forEach((char, i) => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.style.animationDelay = `${0.05 * i + 0.3}s`;
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        title.appendChild(span);
+      });
+    }
+
+    // ===== AOS =====
+    AOS.init({ duration: 800, once: true, offset: 100, easing: 'ease-out-cubic' });
+
+    // ===== CUSTOM CURSOR =====
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = mouseX - 4 + 'px';
+      cursorDot.style.top = mouseY - 4 + 'px';
+    });
+
+    function animateCursorRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = ringX - 20 + 'px';
+      cursorRing.style.top = ringY - 20 + 'px';
+      requestAnimationFrame(animateCursorRing);
+    }
+    animateCursorRing();
+
+    document.querySelectorAll('a, button, .tilt-card, .comparison-card, .feature-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+    });
+
+    // ===== SCROLL PROGRESS =====
+    const scrollProgress = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      scrollProgress.style.width = scrolled + '%';
+    });
+
+    // ===== DARK MODE =====
     const darkToggle = document.getElementById('darkToggle');
     const body = document.body;
     const savedTheme = localStorage.getItem('orionTheme');
@@ -993,24 +2150,40 @@
       icon.classList.toggle('fa-sun');
     });
 
-    // Navbar scroll
+    // ===== NAVBAR SCROLL =====
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 30);
     });
 
-    // Intersection Observer for animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-        }
-      });
-    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+    // ===== MOBILE MENU =====
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      const icon = mobileMenuBtn.querySelector('i');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-xmark');
+    });
 
-    // Counter animation
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('active');
+      const icon = mobileMenuBtn.querySelector('i');
+      icon.classList.add('fa-bars');
+      icon.classList.remove('fa-xmark');
+    }
+
+    // ===== BACK TO TOP =====
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 500);
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== COUNTER ANIMATION =====
     const statsSection = document.getElementById('stats');
     let counted = false;
     
@@ -1019,27 +2192,249 @@
         counted = true;
         document.querySelectorAll('.stat-number').forEach(stat => {
           const target = parseFloat(stat.dataset.target);
-          let suffix = stat.textContent.includes('M') ? 'M' : stat.textContent.includes('%') ? '%' : '';
+          let suffix = '';
+          if (target === 2.4) suffix = 'M';
+          else if (target === 99.7) suffix = '%';
+          else if (target === 42) suffix = '+';
           animateCounter(stat, 0, target, 2000, suffix);
         });
       }
     }, { threshold: 0.5 });
     
-    statsObserver.observe(statsSection);
+    if (statsSection) statsObserver.observe(statsSection);
 
     function animateCounter(element, start, end, duration, suffix = '') {
       let startTime = null;
       const step = (timestamp) => {
         if (!startTime) startTime = timestamp;
         const progress = Math.min((timestamp - startTime) / duration, 1);
-        element.textContent = (progress * (end - start) + start).toFixed(1) + suffix;
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        element.textContent = (eased * (end - start) + start).toFixed(1) + suffix;
         if (progress < 1) requestAnimationFrame(step);
         else element.textContent = end + suffix;
       };
       requestAnimationFrame(step);
     }
 
-    // AI Chat Assistant Logic (unchanged, kept as is)
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ===== 3D TILT EFFECT =====
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / centerY * -8;
+        const rotateY = (x - centerX) / centerX * 8;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        card.style.transition = 'transform 0.5s ease';
+      });
+
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'none';
+      });
+    });
+
+    // ===== MAGNETIC BUTTON EFFECT =====
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0, 0) scale(1)';
+      });
+    });
+
+    // ===== RIPPLE EFFECT ON BUTTONS =====
+    document.querySelectorAll('.cta-button, .card-cta, .quick-btn').forEach(btn => {
+      btn.style.position = 'relative';
+      btn.style.overflow = 'hidden';
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+        ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // ===== TESTIMONIALS CAROUSEL =====
+    const track = document.getElementById('testimonialsTrack');
+    const prevBtn = document.getElementById('prevTestimonial');
+    const nextBtn = document.getElementById('nextTestimonial');
+    let trackPosition = 0;
+    const cardWidth = 370;
+
+    nextBtn.addEventListener('click', () => {
+      const maxScroll = track.scrollWidth - track.parentElement.offsetWidth;
+      trackPosition = Math.min(trackPosition + cardWidth, maxScroll);
+      track.style.transform = `translateX(-${trackPosition}px)`;
+    });
+
+    prevBtn.addEventListener('click', () => {
+      trackPosition = Math.max(trackPosition - cardWidth, 0);
+      track.style.transform = `translateX(-${trackPosition}px)`;
+    });
+
+    // Touch drag for testimonials
+    let isDragging = false, startX, scrollStart;
+    track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX; scrollStart = trackPosition; });
+    track.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const delta = startX - e.pageX;
+      trackPosition = Math.max(0, Math.min(scrollStart + delta, track.scrollWidth - track.parentElement.offsetWidth));
+      track.style.transform = `translateX(-${trackPosition}px)`;
+    });
+    document.addEventListener('mouseup', () => { isDragging = false; });
+
+    // ===== PARTICLE SYSTEM =====
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = body.classList.contains('dark') 
+          ? `rgba(102, 126, 234, ${this.opacity})`
+          : `rgba(100, 100, 100, ${this.opacity * 0.5})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 60; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+
+        // Draw connections
+        particles.forEach((p2, j) => {
+          if (j <= i) return;
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = body.classList.contains('dark')
+              ? `rgba(102, 126, 234, ${0.1 * (1 - dist / 120)})`
+              : `rgba(100, 100, 100, ${0.05 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ===== TOAST NOTIFICATIONS =====
+    function showToast(icon, text, duration = 4000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text">${text}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('removing');
+        setTimeout(() => toast.remove(), 400);
+      }, duration);
+    }
+
+    function showWelcomeToast() {
+      setTimeout(() => showToast('👋', 'Welcome to Orion! Explore our new lineup.'), 1000);
+      setTimeout(() => showToast('🔥', 'Orion Pro is now available — limited stock!'), 5000);
+    }
+
+    // ===== NEWSLETTER =====
+    document.getElementById('newsletterBtn').addEventListener('click', () => {
+      const email = document.getElementById('newsletterEmail').value;
+      if (email && email.includes('@')) {
+        showToast('✅', 'Subscribed! Check your inbox for a welcome gift.');
+        document.getElementById('newsletterEmail').value = '';
+      } else {
+        showToast('⚠️', 'Please enter a valid email address.');
+      }
+    });
+
+    // ===== GLOW ORB MOUSE FOLLOW =====
+    document.addEventListener('mousemove', (e) => {
+      const orb1 = document.querySelector('.glow-orb-1');
+      const orb2 = document.querySelector('.glow-orb-2');
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      orb1.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+      orb2.style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+    });
+
+    // ===== SMOOTH PARALLAX ON SCROLL =====
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const heroContent = document.querySelector('.hero-content');
+      if (heroContent) {
+        heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+        heroContent.style.opacity = 1 - scrolled / 700;
+      }
+    });
+
+    // ========== AI CHAT WIDGET ==========
     (function() {
       const chatToggle = document.getElementById('chatToggle');
       const chatClose = document.getElementById('chatClose');
@@ -1049,7 +2444,6 @@
       const chatSend = document.getElementById('chatSend');
       const quickQuestions = document.querySelectorAll('.quick-btn');
 
-      // Product database
       const products = {
         earbuds: [
           { name: 'Orion Air', price: 179, icon: '🎧', desc: 'Lightweight wireless freedom', rating: '★★★★★ (4.9)', use: 'daily, casual, lightweight' },
@@ -1107,52 +2501,36 @@
 
       function sendMessage(text) {
         if (!text.trim()) return;
-
         addMessage(text, 'user');
         chatInput.value = '';
-
         showTyping();
-
-        setTimeout(() => {
-          hideTyping();
-          processMessage(text.toLowerCase());
-        }, 1500);
+        setTimeout(() => { hideTyping(); processMessage(text.toLowerCase()); }, 1500);
       }
 
       chatSend.addEventListener('click', () => sendMessage(chatInput.value));
-      chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage(chatInput.value);
-      });
+      chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(chatInput.value); });
 
       quickQuestions.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const questionText = btn.textContent;
-          sendMessage(questionText);
-        });
+        btn.addEventListener('click', () => sendMessage(btn.textContent));
       });
 
       function addMessage(text, type = 'ai') {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
-        
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.textContent = type === 'ai' ? '🤖' : '👤';
-        
         const content = document.createElement('div');
         content.className = 'message-content';
         content.innerHTML = `<p>${text}</p>`;
-        
         messageDiv.appendChild(avatar);
         messageDiv.appendChild(content);
-        
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
       function addProductRecommendation(product) {
         const lastMessage = chatMessages.lastElementChild.querySelector('.message-content');
-        
         const productDiv = document.createElement('div');
         productDiv.className = 'product-recommendation';
         productDiv.innerHTML = `
@@ -1167,13 +2545,9 @@
           <div class="product-rec-rating">${product.rating}</div>
           <a href="product.html" class="product-rec-btn">View Product →</a>
         `;
-        
         productDiv.addEventListener('click', (e) => {
-          if (!e.target.classList.contains('product-rec-btn')) {
-            window.location.href = 'product.html';
-          }
+          if (!e.target.classList.contains('product-rec-btn')) window.location.href = 'product.html';
         });
-        
         lastMessage.appendChild(productDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
@@ -1182,14 +2556,7 @@
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message ai-message';
         typingDiv.id = 'typing-indicator';
-        typingDiv.innerHTML = `
-          <div class="message-avatar">🤖</div>
-          <div class="typing-indicator">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-          </div>
-        `;
+        typingDiv.innerHTML = `<div class="message-avatar">🤖</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
         chatMessages.appendChild(typingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
@@ -1203,57 +2570,30 @@
         let response = responses.default;
         let category = null;
 
-        if (text.includes('earbud') || text.includes('wireless') || text.includes('tws')) {
-          response = responses.earbuds;
-          category = 'earbuds';
-        } else if (text.includes('headphone') || text.includes('over-ear') || text.includes('over ear')) {
-          response = responses.headphones;
-          category = 'headphones';
-        } else if (text.includes('budget') || text.includes('cheap') || text.includes('affordable')) {
-          response = responses.budget;
-          category = 'budget';
-        } else if (text.includes('premium') || text.includes('best') || text.includes('high-end') || text.includes('expensive')) {
-          response = responses.premium;
-          category = 'premium';
-        } else if (text.includes('sport') || text.includes('workout') || text.includes('gym') || text.includes('running') || text.includes('exercise')) {
-          response = responses.sport;
-          category = 'sport';
-        } else if (text.includes('studio') || text.includes('production') || text.includes('professional') || text.includes('music making')) {
-          response = responses.studio;
-          category = 'studio';
-        } else if (text.includes('gaming') || text.includes('game') || text.includes('esport')) {
-          response = "For gaming, I highly recommend:";
-          category = 'headphones';
-        } else if (text.includes('thank') || text.includes('thanks')) {
-          response = responses.thanks;
-        } else if (text.includes('hello') || text.includes('hi') || text.includes('hey')) {
-          response = responses.greeting;
-        } else if (text.includes('help') || text.includes('recommend')) {
-          response = "I'd be happy to help! Are you looking for:\n• Earbuds or Headphones?\n• Budget-friendly or Premium?\n• For specific use like sports or studio?";
-        } else if (text.includes('difference') || text.includes('compare')) {
-          response = "Great question! Let me show you our range:\n• Air ($179) - Best for daily use\n• Pro ($329) - Spatial audio & ANC\n• Elite ($499) - Premium titanium build\n• Sport ($149) - Perfect for workouts";
-        } else if (text.includes('anc') || text.includes('noise cancel')) {
-          response = "For the best noise cancellation, I recommend:";
-          category = 'premium';
-        } else if (text.includes('battery') || text.includes('long battery')) {
-          response = "For longest battery life, check out:";
-          category = 'headphones';
-        }
+        if (text.includes('earbud') || text.includes('wireless') || text.includes('tws')) { response = responses.earbuds; category = 'earbuds'; }
+        else if (text.includes('headphone') || text.includes('over-ear') || text.includes('over ear')) { response = responses.headphones; category = 'headphones'; }
+        else if (text.includes('budget') || text.includes('cheap') || text.includes('affordable')) { response = responses.budget; category = 'budget'; }
+        else if (text.includes('premium') || text.includes('best') || text.includes('high-end') || text.includes('expensive')) { response = responses.premium; category = 'premium'; }
+        else if (text.includes('sport') || text.includes('workout') || text.includes('gym') || text.includes('running') || text.includes('exercise')) { response = responses.sport; category = 'sport'; }
+        else if (text.includes('studio') || text.includes('production') || text.includes('professional') || text.includes('music making')) { response = responses.studio; category = 'studio'; }
+        else if (text.includes('gaming') || text.includes('game') || text.includes('esport')) { response = "For gaming, I highly recommend:"; category = 'headphones'; }
+        else if (text.includes('thank') || text.includes('thanks')) { response = responses.thanks; }
+        else if (text.includes('hello') || text.includes('hi') || text.includes('hey')) { response = responses.greeting; }
+        else if (text.includes('help') || text.includes('recommend')) { response = "I'd be happy to help! Are you looking for:\n• Earbuds or Headphones?\n• Budget-friendly or Premium?\n• For specific use like sports or studio?"; }
+        else if (text.includes('difference') || text.includes('compare')) { response = "Great question! Let me show you our range:\n• Air ($179) - Best for daily use\n• Pro ($329) - Spatial audio & ANC\n• Elite ($499) - Premium titanium build\n• Sport ($149) - Perfect for workouts"; }
+        else if (text.includes('anc') || text.includes('noise cancel')) { response = "For the best noise cancellation, I recommend:"; category = 'premium'; }
+        else if (text.includes('battery') || text.includes('long battery')) { response = "For longest battery life, check out:"; category = 'headphones'; }
 
         addMessage(response, 'ai');
 
         if (category && products[category]) {
           products[category].forEach((product, index) => {
-            setTimeout(() => {
-              addProductRecommendation(product);
-            }, 300 * (index + 1));
+            setTimeout(() => addProductRecommendation(product), 300 * (index + 1));
           });
         }
 
         if (category) {
-          setTimeout(() => {
-            addMessage("Would you like to know more about any of these products, or see other options?", 'ai');
-          }, 300 * (products[category]?.length || 1) + 500);
+          setTimeout(() => addMessage("Would you like to know more about any of these products, or see other options?", 'ai'), 300 * (products[category]?.length || 1) + 500);
         }
       }
     })();
